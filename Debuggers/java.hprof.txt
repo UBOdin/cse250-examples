@@ -1,0 +1,379 @@
+JAVA PROFILE 1.0.1, created Fri Sep  3 02:24:46 2021
+
+Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+  - Neither the name of Oracle nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Header for -agentlib:hprof (or -Xrunhprof) ASCII Output (JDK 5.0 JVMTI based)
+
+WARNING!  This file format is under development, and is subject to
+change without notice.
+
+This file contains the following types of records:
+
+THREAD START
+THREAD END      mark the lifetime of Java threads
+
+TRACE           represents a Java stack trace.  Each trace consists
+                of a series of stack frames.  Other records refer to
+                TRACEs to identify (1) where object allocations have
+                taken place, (2) the frames in which GC roots were
+                found, and (3) frequently executed methods.
+
+HEAP DUMP       is a complete snapshot of all live objects in the Java
+                heap.  Following distinctions are made:
+
+                ROOT    root set as determined by GC
+                CLS     classes 
+                OBJ     instances
+                ARR     arrays
+
+SITES           is a sorted list of allocation sites.  This identifies
+                the most heavily allocated object types, and the TRACE
+                at which those allocations occurred.
+
+CPU SAMPLES     is a statistical profile of program execution.  The VM
+                periodically samples all running threads, and assigns
+                a quantum to active TRACEs in those threads.  Entries
+                in this record are TRACEs ranked by the percentage of
+                total quanta they consumed; top-ranked TRACEs are
+                typically hot spots in the program.
+
+CPU TIME        is a profile of program execution obtained by measuring
+                the time spent in individual methods (excluding the time
+                spent in callees), as well as by counting the number of
+                times each method is called. Entries in this record are
+                TRACEs ranked by the percentage of total CPU time. The
+                "count" field indicates the number of times each TRACE 
+                is invoked.
+
+MONITOR TIME    is a profile of monitor contention obtained by measuring
+                the time spent by a thread waiting to enter a monitor.
+                Entries in this record are TRACEs ranked by the percentage
+                of total monitor contention time and a brief description
+                of the monitor.  The "count" field indicates the number of 
+                times the monitor was contended at that TRACE.
+
+MONITOR DUMP    is a complete snapshot of all the monitors and threads in 
+                the System.
+
+HEAP DUMP, SITES, CPU SAMPLES|TIME and MONITOR DUMP|TIME records are generated 
+at program exit.  They can also be obtained during program execution by typing 
+Ctrl-\ (on Solaris) or by typing Ctrl-Break (on Win32).
+
+--------
+
+THREAD START (obj=5000018e, id = 200001, name="main", group="main")
+THREAD END (id = 200001)
+THREAD START (obj=5000018e, id = 200004, name="DestroyJavaVM", group="main")
+THREAD END (id = 200004)
+TRACE 300207:
+	scala.collection.StrictOptimizedLinearSeqOps.drop(LinearSeq.scala:261)
+	scala.collection.StrictOptimizedLinearSeqOps.drop$(LinearSeq.scala:257)
+	scala.collection.immutable.List.drop(List.scala:79)
+	scala.collection.immutable.List.drop(List.scala:79)
+	scala.collection.LinearSeqOps.apply(LinearSeq.scala:116)
+	scala.collection.LinearSeqOps.apply$(LinearSeq.scala:114)
+	scala.collection.immutable.List.apply(List.scala:79)
+	cse250.examples.DataStructureChoice$.$anonfun$main$1(DataStructureChoice.scala:13)
+	cse250.examples.DataStructureChoice$$$Lambda$3.1121172875.apply$mcVI$sp(<Unknown Source>:Unknown line)
+	scala.collection.immutable.Range.foreach$mVc$sp(Range.scala:190)
+TRACE 300210:
+	scala.collection.immutable.$colon$colon.tail(List.scala:654)
+	scala.collection.StrictOptimizedLinearSeqOps.loop$2(LinearSeq.scala:260)
+	scala.collection.StrictOptimizedLinearSeqOps.drop(LinearSeq.scala:261)
+	scala.collection.StrictOptimizedLinearSeqOps.drop$(LinearSeq.scala:257)
+	scala.collection.immutable.List.drop(List.scala:79)
+	scala.collection.immutable.List.drop(List.scala:79)
+	scala.collection.LinearSeqOps.apply(LinearSeq.scala:116)
+	scala.collection.LinearSeqOps.apply$(LinearSeq.scala:114)
+	scala.collection.immutable.List.apply(List.scala:79)
+	cse250.examples.DataStructureChoice$.$anonfun$main$1(DataStructureChoice.scala:13)
+TRACE 300071:
+	java.lang.ClassLoader.defineClass1(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:756)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:468)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:74)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:369)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:363)
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+	java.net.URLClassLoader.findClass(URLClassLoader.java:362)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:418)
+TRACE 300209:
+	scala.collection.immutable.Range.foreach$mVc$sp(Range.scala:191)
+	cse250.examples.DataStructureChoice$.main(DataStructureChoice.scala:12)
+	cse250.examples.DataStructureChoice.main(DataStructureChoice.scala:Unknown line)
+TRACE 300080:
+	java.util.zip.Inflater.inflateBytes(Inflater.java:Unknown line)
+	java.util.zip.Inflater.inflate(Inflater.java:259)
+	java.util.zip.InflaterInputStream.read(InflaterInputStream.java:152)
+	sun.misc.Resource.getBytes(Resource.java:124)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:463)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:74)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:369)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:363)
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+	java.net.URLClassLoader.findClass(URLClassLoader.java:362)
+TRACE 300043:
+	java.util.zip.ZipFile.getInputStream(ZipFile.java:389)
+	java.util.jar.JarFile.getBytes(JarFile.java:424)
+	java.util.jar.JarFile.checkForSpecialAttributes(JarFile.java:560)
+	java.util.jar.JarFile.hasClassPathAttribute(JarFile.java:523)
+	java.util.jar.JavaUtilJarAccessImpl.jarFileHasClassPathAttribute(JavaUtilJarAccessImpl.java:37)
+	sun.misc.URLClassPath$JarLoader.getClassPath(URLClassPath.java:1198)
+	sun.misc.URLClassPath.getLoader(URLClassPath.java:532)
+	sun.misc.URLClassPath.getNextLoader(URLClassPath.java:494)
+	sun.misc.URLClassPath.getResource(URLClassPath.java:248)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+TRACE 300076:
+	java.util.jar.JarFile.match(JarFile.java:540)
+	java.util.jar.JarFile.checkForSpecialAttributes(JarFile.java:561)
+	java.util.jar.JarFile.hasClassPathAttribute(JarFile.java:523)
+	java.util.jar.JavaUtilJarAccessImpl.jarFileHasClassPathAttribute(JavaUtilJarAccessImpl.java:37)
+	sun.misc.URLClassPath$JarLoader.getClassPath(URLClassPath.java:1198)
+	sun.misc.URLClassPath.getLoader(URLClassPath.java:532)
+	sun.misc.URLClassPath.getNextLoader(URLClassPath.java:494)
+	sun.misc.URLClassPath.getResource(URLClassPath.java:248)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:363)
+TRACE 300077:
+	java.lang.StringCoding$StringDecoder.decode(StringCoding.java:149)
+	java.lang.StringCoding.decode(StringCoding.java:193)
+	java.lang.String.<init>(String.java:426)
+	java.util.jar.Manifest.parseName(Manifest.java:304)
+	java.util.jar.Manifest.read(Manifest.java:258)
+	java.util.jar.Manifest.<init>(Manifest.java:81)
+	java.util.jar.Manifest.<init>(Manifest.java:73)
+	java.util.jar.JarFile.getManifestFromReference(JarFile.java:199)
+	java.util.jar.JarFile.getManifest(JarFile.java:180)
+	sun.misc.URLClassPath$JarLoader$2.getManifest(URLClassPath.java:992)
+TRACE 300079:
+	java.lang.System.nanoTime(System.java:Unknown line)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:402)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:405)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:352)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	java.lang.ClassLoader.defineClass1(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:756)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:468)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:74)
+TRACE 300082:
+	java.lang.ClassLoader.findBootstrapClass(ClassLoader.java:Unknown line)
+	java.lang.ClassLoader.findBootstrapClassOrNull(ClassLoader.java:1008)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:407)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:405)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:352)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	scala.collection.immutable.List$.<clinit>(List.scala:682)
+	scala.collection.immutable.Iterable$.<init>(Iterable.scala:32)
+	scala.collection.immutable.Iterable$.<clinit>(Iterable.scala:32)
+	scala.collection.Iterable$.<init>(Iterable.scala:899)
+TRACE 300083:
+	sun.misc.Unsafe.getLong(Unsafe.java:Unknown line)
+	java.nio.DirectLongBufferU.get(DirectLongBufferU.java:252)
+	sun.misc.PerfCounter.get(PerfCounter.java:83)
+	sun.misc.PerfCounter.add(PerfCounter.java:97)
+	sun.misc.PerfCounter.increment(PerfCounter.java:105)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:423)
+	sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:352)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	scala.collection.immutable.List$.<clinit>(List.scala:682)
+	scala.collection.immutable.Iterable$.<init>(Iterable.scala:32)
+TRACE 300084:
+	java.util.zip.Inflater.reset(Inflater.java:Unknown line)
+	java.util.zip.Inflater.reset(Inflater.java:352)
+	java.util.zip.ZipFile.releaseInflater(ZipFile.java:477)
+	java.util.zip.ZipFile.access$100(ZipFile.java:60)
+	java.util.zip.ZipFile$ZipFileInflaterInputStream.close(ZipFile.java:423)
+	sun.misc.Resource.getBytes(Resource.java:143)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:463)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:74)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:369)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:363)
+TRACE 300086:
+	scala.collection.immutable.Vector$.<clinit>(Vector.scala:88)
+	scala.collection.immutable.IndexedSeq$.<init>(Seq.scala:112)
+	scala.collection.immutable.IndexedSeq$.<clinit>(Seq.scala:112)
+	scala.package$.<clinit>(package.scala:64)
+	cse250.examples.DataStructureChoice$.main(DataStructureChoice.scala:10)
+	cse250.examples.DataStructureChoice.main(DataStructureChoice.scala:Unknown line)
+TRACE 300093:
+	java.lang.invoke.MethodHandles.<clinit>(MethodHandles.java:2304)
+	java.lang.invoke.MethodHandles$Lookup.<clinit>(MethodHandles.java:663)
+	java.lang.invoke.MethodHandleNatives.linkMethodHandleConstant(MethodHandleNatives.java:475)
+	scala.collection.immutable.LazyList$.<clinit>(LazyList.scala:971)
+	scala.package$.<clinit>(package.scala:89)
+	cse250.examples.DataStructureChoice$.main(DataStructureChoice.scala:10)
+	cse250.examples.DataStructureChoice.main(DataStructureChoice.scala:Unknown line)
+TRACE 300132:
+	java.lang.invoke.MethodHandleNatives.resolve(MethodHandleNatives.java:Unknown line)
+	java.lang.invoke.MemberName$Factory.resolve(MemberName.java:975)
+	java.lang.invoke.MemberName$Factory.resolveOrFail(MemberName.java:1000)
+	java.lang.invoke.InvokerBytecodeGenerator.resolveInvokerMember(InvokerBytecodeGenerator.java:294)
+	java.lang.invoke.InvokerBytecodeGenerator.loadMethod(InvokerBytecodeGenerator.java:277)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:618)
+	java.lang.invoke.LambdaForm.compileToBytecode(LambdaForm.java:654)
+	java.lang.invoke.DirectMethodHandle.makePreparedLambdaForm(DirectMethodHandle.java:260)
+	java.lang.invoke.DirectMethodHandle.preparedLambdaForm(DirectMethodHandle.java:194)
+	java.lang.invoke.DirectMethodHandle.preparedLambdaForm(DirectMethodHandle.java:183)
+TRACE 300142:
+	java.lang.System.arraycopy(System.java:Unknown line)
+	jdk.internal.org.objectweb.asm.ByteVector.putByteArray(ByteVector.java:348)
+	jdk.internal.org.objectweb.asm.AnnotationWriter.put(AnnotationWriter.java:306)
+	jdk.internal.org.objectweb.asm.MethodWriter.put(MethodWriter.java:2353)
+	jdk.internal.org.objectweb.asm.ClassWriter.toByteArray(ClassWriter.java:951)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCodeBytes(InvokerBytecodeGenerator.java:727)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:618)
+	java.lang.invoke.LambdaForm.compileToBytecode(LambdaForm.java:654)
+	java.lang.invoke.DirectMethodHandle.makePreparedLambdaForm(DirectMethodHandle.java:260)
+	java.lang.invoke.DirectMethodHandle.preparedLambdaForm(DirectMethodHandle.java:194)
+TRACE 300150:
+	java.lang.System.arraycopy(System.java:Unknown line)
+	java.lang.invoke.MethodType.insertParameterTypes(MethodType.java:399)
+	java.lang.invoke.MemberName.getInvocationType(MemberName.java:168)
+	java.lang.invoke.LambdaForm$NamedFunction.methodType(LambdaForm.java:1280)
+	java.lang.invoke.InvokerBytecodeGenerator.emitPushArgument(InvokerBytecodeGenerator.java:1150)
+	java.lang.invoke.InvokerBytecodeGenerator.emitPushArguments(InvokerBytecodeGenerator.java:1144)
+	java.lang.invoke.InvokerBytecodeGenerator.emitPushArguments(InvokerBytecodeGenerator.java:1139)
+	java.lang.invoke.InvokerBytecodeGenerator.emitStaticInvoke(InvokerBytecodeGenerator.java:862)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCodeBytes(InvokerBytecodeGenerator.java:715)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:618)
+TRACE 300158:
+	sun.misc.Unsafe.defineAnonymousClass(Unsafe.java:Unknown line)
+	java.lang.invoke.InvokerBytecodeGenerator.loadAndInitializeInvokerClass(InvokerBytecodeGenerator.java:284)
+	java.lang.invoke.InvokerBytecodeGenerator.loadMethod(InvokerBytecodeGenerator.java:276)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:618)
+	java.lang.invoke.LambdaForm.compileToBytecode(LambdaForm.java:654)
+	java.lang.invoke.LambdaForm.prepare(LambdaForm.java:635)
+	java.lang.invoke.MethodHandle.<init>(MethodHandle.java:461)
+	java.lang.invoke.BoundMethodHandle.<init>(BoundMethodHandle.java:58)
+	java.lang.invoke.BoundMethodHandle$Species_L.<init>(BoundMethodHandle.java:211)
+	java.lang.invoke.BoundMethodHandle$Species_L.copyWith(BoundMethodHandle.java:228)
+TRACE 300179:
+	java.lang.invoke.InvokerBytecodeGenerator.<init>(InvokerBytecodeGenerator.java:107)
+	java.lang.invoke.InvokerBytecodeGenerator.<init>(InvokerBytecodeGenerator.java:128)
+	java.lang.invoke.InvokerBytecodeGenerator.generateCustomizedCode(InvokerBytecodeGenerator.java:617)
+	java.lang.invoke.LambdaForm.compileToBytecode(LambdaForm.java:654)
+	java.lang.invoke.LambdaForm.prepare(LambdaForm.java:635)
+	java.lang.invoke.MethodHandle.<init>(MethodHandle.java:461)
+	java.lang.invoke.BoundMethodHandle.<init>(BoundMethodHandle.java:58)
+	java.lang.invoke.BoundMethodHandle$Species_L.<init>(BoundMethodHandle.java:211)
+	java.lang.invoke.BoundMethodHandle$Species_L.copyWith(BoundMethodHandle.java:228)
+	java.lang.invoke.MethodHandle.asCollector(MethodHandle.java:1002)
+TRACE 300184:
+	java.util.zip.ZipFile.getEntry(ZipFile.java:Unknown line)
+	java.util.zip.ZipFile.getEntry(ZipFile.java:316)
+	java.util.jar.JarFile.getEntry(JarFile.java:240)
+	java.util.jar.JarFile.getJarEntry(JarFile.java:223)
+	sun.misc.URLClassPath$JarLoader.getResource(URLClassPath.java:1054)
+	sun.misc.URLClassPath.getResource(URLClassPath.java:249)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:363)
+	java.security.AccessController.doPrivileged(AccessController.java:Unknown line)
+	java.net.URLClassLoader.findClass(URLClassLoader.java:362)
+TRACE 300185:
+	scala.runtime.ScalaRunTime$.wrapRefArray(ScalaRunTime.scala:284)
+	scala.collection.immutable.NumericRange$.<clinit>(NumericRange.scala:412)
+	scala.collection.IterableFactory.range(Factory.scala:132)
+	scala.collection.IterableFactory.range$(Factory.scala:132)
+	scala.collection.immutable.List$.range(List.scala:681)
+	cse250.examples.DataStructureChoice$.main(DataStructureChoice.scala:10)
+	cse250.examples.DataStructureChoice.main(DataStructureChoice.scala:Unknown line)
+TRACE 300202:
+	sun.misc.Unsafe.storeFence(Unsafe.java:Unknown line)
+	java.lang.invoke.LambdaForm$DMH.846063400.invokeSpecial_L_V(LambdaForm$DMH:Unknown line)
+	java.lang.invoke.LambdaForm$BMH.1207140081.reinvoke(LambdaForm$BMH:Unknown line)
+	java.lang.invoke.LambdaForm$MH.1265210847.invoke_MT(LambdaForm$MH:Unknown line)
+	scala.runtime.Statics.releaseFence(Statics.java:148)
+	scala.collection.immutable.$colon$colon.<init>(List.scala:656)
+	scala.collection.immutable.List.prependedAll(List.scala:156)
+	scala.collection.immutable.List$.from(List.scala:684)
+	scala.collection.immutable.List$.from(List.scala:681)
+	scala.collection.IterableFactory.range(Factory.scala:132)
+TRACE 300203:
+	scala.collection.immutable.List.prependedAll(List.scala:155)
+	scala.collection.immutable.List$.from(List.scala:684)
+	scala.collection.immutable.List$.from(List.scala:681)
+	scala.collection.IterableFactory.range(Factory.scala:132)
+	scala.collection.IterableFactory.range$(Factory.scala:132)
+	scala.collection.immutable.List$.range(List.scala:681)
+	cse250.examples.DataStructureChoice$.main(DataStructureChoice.scala:10)
+	cse250.examples.DataStructureChoice.main(DataStructureChoice.scala:Unknown line)
+TRACE 300206:
+	scala.collection.StrictOptimizedLinearSeqOps.loop$2(LinearSeq.scala:260)
+	scala.collection.StrictOptimizedLinearSeqOps.drop(LinearSeq.scala:261)
+	scala.collection.StrictOptimizedLinearSeqOps.drop$(LinearSeq.scala:257)
+	scala.collection.immutable.List.drop(List.scala:79)
+	scala.collection.immutable.List.drop(List.scala:79)
+	scala.collection.LinearSeqOps.apply(LinearSeq.scala:116)
+	scala.collection.LinearSeqOps.apply$(LinearSeq.scala:114)
+	scala.collection.immutable.List.apply(List.scala:79)
+	cse250.examples.DataStructureChoice$.$anonfun$main$1(DataStructureChoice.scala:13)
+	cse250.examples.DataStructureChoice$$$Lambda$3.1121172875.apply$mcVI$sp(<Unknown Source>:Unknown line)
+TRACE 300208:
+	sun.misc.Unsafe.compareAndSwapLong(Unsafe.java:Unknown line)
+	java.util.concurrent.atomic.AtomicLong.compareAndSet(AtomicLong.java:147)
+	java.util.Random.next(Random.java:204)
+	java.util.Random.nextInt(Random.java:390)
+	scala.util.Random.nextInt(Random.scala:96)
+	cse250.examples.DataStructureChoice$.$anonfun$main$1(DataStructureChoice.scala:13)
+	cse250.examples.DataStructureChoice$$$Lambda$3.1121172875.apply$mcVI$sp(<Unknown Source>:Unknown line)
+	scala.collection.immutable.Range.foreach$mVc$sp(Range.scala:190)
+	cse250.examples.DataStructureChoice$.main(DataStructureChoice.scala:12)
+	cse250.examples.DataStructureChoice.main(DataStructureChoice.scala:Unknown line)
+CPU SAMPLES BEGIN (total = 185) Fri Sep  3 02:24:48 2021
+rank   self  accum   count trace method
+   1 44.86% 44.86%      83 300207 scala.collection.StrictOptimizedLinearSeqOps.drop
+   2 35.14% 80.00%      65 300210 scala.collection.immutable.$colon$colon.tail
+   3  5.95% 85.95%      11 300071 java.lang.ClassLoader.defineClass1
+   4  2.16% 88.11%       4 300209 scala.collection.immutable.Range.foreach$mVc$sp
+   5  1.08% 89.19%       2 300080 java.util.zip.Inflater.inflateBytes
+   6  0.54% 89.73%       1 300043 java.util.zip.ZipFile.getInputStream
+   7  0.54% 90.27%       1 300076 java.util.jar.JarFile.match
+   8  0.54% 90.81%       1 300077 java.lang.StringCoding$StringDecoder.decode
+   9  0.54% 91.35%       1 300079 java.lang.System.nanoTime
+  10  0.54% 91.89%       1 300082 java.lang.ClassLoader.findBootstrapClass
+  11  0.54% 92.43%       1 300083 sun.misc.Unsafe.getLong
+  12  0.54% 92.97%       1 300084 java.util.zip.Inflater.reset
+  13  0.54% 93.51%       1 300086 scala.collection.immutable.Vector$.<clinit>
+  14  0.54% 94.05%       1 300093 java.lang.invoke.MethodHandles.<clinit>
+  15  0.54% 94.59%       1 300132 java.lang.invoke.MethodHandleNatives.resolve
+  16  0.54% 95.14%       1 300142 java.lang.System.arraycopy
+  17  0.54% 95.68%       1 300150 java.lang.System.arraycopy
+  18  0.54% 96.22%       1 300158 sun.misc.Unsafe.defineAnonymousClass
+  19  0.54% 96.76%       1 300179 java.lang.invoke.InvokerBytecodeGenerator.<init>
+  20  0.54% 97.30%       1 300184 java.util.zip.ZipFile.getEntry
+  21  0.54% 97.84%       1 300185 scala.runtime.ScalaRunTime$.wrapRefArray
+  22  0.54% 98.38%       1 300202 sun.misc.Unsafe.storeFence
+  23  0.54% 98.92%       1 300203 scala.collection.immutable.List.prependedAll
+  24  0.54% 99.46%       1 300206 scala.collection.StrictOptimizedLinearSeqOps.loop$2
+  25  0.54% 100.00%       1 300208 sun.misc.Unsafe.compareAndSwapLong
+CPU SAMPLES END
