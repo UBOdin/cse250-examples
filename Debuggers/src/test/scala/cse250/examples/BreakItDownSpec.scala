@@ -17,7 +17,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 class BreakItDownSpec extends AnyFlatSpec
 {
-  "BreakItDown" should "count 38 baked goods" in {
+  "BreakItDown" should "count 75 baked goods" in {
     val data: Seq[BreakItDown.FarmersMarket] =
       BreakItDown
         .readData("AMS-USDA-Directories-FarmersMarkets.csv")
