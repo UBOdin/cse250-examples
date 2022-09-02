@@ -2,7 +2,8 @@ package cse250.examples
 /**
  * cse250.examples.DataStructureChoice.scala
  *
- * Copyright 2021 Oliver Kennedy (okennedy@buffalo.edu)
+ * Copyright 2022 Oliver Kennedy (okennedy@buffalo.edu)
+ *           2022 Eric Mikida (epmikida@buffalo.edu)
  *           2021 Andrew Hughes (ahughes6@buffalo.edu)
  *
  * This work is licensed under the Creative Commons
